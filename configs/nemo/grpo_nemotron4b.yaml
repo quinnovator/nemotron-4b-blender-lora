@@ -1,0 +1,183 @@
+# NeMo RL + NeMo Gym GRPO for Nemotron 3 Nano 4B on one RTX 4090 (24 GiB).
+# 4 prompts x 8 samples per step, LoRA r=32/alpha=64 on attention + Mamba in_proj,
+# lr 1e-5 constant after 10 warmup steps, temperature 0.7, no KL term, 768 new
+# tokens, 600 steps. stages/train.py fills in the run's paths (data, checkpoints,
+# logs) and the step count from configs/<run>.yaml.
+defaults: /opt/nemo-rl/examples/configs/grpo_math_1B.yaml
+
+grpo:
+  num_prompts_per_step: 4
+  num_generations_per_prompt: 8
+  max_rollout_turns: 1
+  max_num_epochs: 2               # 600 steps x 4 prompts = 1.2 passes over 2,000 tasks
+  max_num_steps: 600
+  normalize_rewards: true
+  use_leave_one_out_baseline: false   # plain group mean, as in the original GRPO
+  skip_reference_policy_logprobs_calculation: true
+  val_period: 0
+  val_at_start: false
+  val_at_end: false
+  max_val_samples: null
+  val_batch_size: null
+  overlong_filtering: false
+  seed: 7
+
+loss_fn:
+  reference_policy_kl_penalty: 0
+  ratio_clip_min: 0.2
+  ratio_clip_max: 0.2
+  token_level_loss: true
+  use_importance_sampling_correction: false
+
+checkpointing:
+  enabled: true
+  checkpoint_dir: null            # set by stages/train.py
+  metric_name: null
+  keep_top_k: 100
+  save_period: 50
+  save_optimizer: true
+
+policy:
+  model_name: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16
+  tokenizer:
+    name: ${policy.model_name}
+    chat_template_kwargs:
+      enable_thinking: false
+  train_global_batch_size: 32
+  train_micro_batch_size: 2
+  logprob_batch_size: 4
+  max_total_sequence_length: 1024
+  precision: bfloat16
+  # Fixed weight-refit buffer: the default (30% of free memory) is smaller than the
+  # 822 MB embedding matrix once vLLM and the policy share the card.
+  refit_buffer_size_gb: 1.7   # split in two halves for double buffering; each must hold 822 MB
+  # Megatron, not DTensor: the DTensor path keeps every parameter (frozen base
+  # included) in fp32 for FSDP, ~15 GiB for 4B, which cannot share a 24 GiB card
+  # with vLLM during weight refit. Megatron keeps the base in bf16 and only the
+  # LoRA weights get fp32 main params.
+  dtensor_cfg:
+    enabled: false
+  megatron_cfg:
+    enabled: true
+    tensor_model_parallel_size: 1
+    pipeline_model_parallel_size: 1
+    context_parallel_size: 1
+    expert_model_parallel_size: 1
+    sequence_parallel: false
+    # Off: Megatron's full-layer recompute is reentrant, and with a frozen
+    # embedding the checkpointed blocks' inputs do not require grad, so LoRA
+    # gets no gradient at all (grad_norm 0.0 in the pilot).
+    activation_checkpointing: false
+    bias_activation_fusion: false
+    empty_unused_memory_level: 2
+    clear_memory_caches_before_refit: true
+    peft:
+      enabled: true
+      # q/k/v/o + Mamba in_proj; Megatron fuses q/k/v into linear_qkv.
+      target_modules: ["linear_qkv", "linear_proj", "in_proj"]
+      exclude_modules: []
+      dim: 32
+      alpha: 64
+      dropout: 0.0
+    optimizer:
+      optimizer: adam
+      lr: 1.0e-5
+      min_lr: 1.0e-5
+      weight_decay: 0.0
+      bf16: true
+      fp16: false
+      params_dtype: float32
+      adam_beta1: 0.9
+      adam_beta2: 0.999
+      adam_eps: 1.0e-8
+      clip_grad: ${policy.max_grad_norm}
+      use_distributed_optimizer: true
+      use_precision_aware_optimizer: true
+    scheduler:
+      start_weight_decay: 0.0
+      end_weight_decay: 0.0
+      weight_decay_incr_style: constant
+      lr_decay_style: constant
+      lr_decay_iters: null
+      lr_warmup_iters: 10
+      lr_warmup_init: 1.0e-6
+  sequence_packing:
+    enabled: false
+  dynamic_batching:
+    enabled: false
+  make_sequence_length_divisible_by: 1
+  max_grad_norm: 1.0
+  optimizer: null   # the DTensor optimizer/scheduler blocks do not apply to Megatron
+  scheduler: null
+  generation:
+    backend: vllm
+    max_new_tokens: 768
+    temperature: 0.7
+    top_p: 1.0
+    top_k: null
+    vllm_cfg:
+      async_engine: true
+      expose_http_server: true
+      # The frozen base stays on the GPU during generation (offload_after_refit
+      # only moves DDP buffers, which hold the LoRA weights), so vLLM gets what is
+      # left beside ~9.4 GiB of policy and ~1.8 GiB of desktop.
+      gpu_memory_utilization: 0.42
+      max_model_len: 1024
+      enforce_eager: false
+    vllm_kwargs:
+      mamba_ssm_cache_dtype: float32
+      max_num_seqs: 64        # 32 rollouts per step; each needs one Mamba cache block
+      compilation_config:
+        backend: eager
+    colocated:
+      enabled: true
+
+data:
+  max_input_seq_length: null
+  shuffle: true
+  num_workers: 0
+  use_multiple_dataloader: false
+  train:
+    # Spelled out: the defaults file's train entry (OpenMathInstruct-2 with a 5%
+    # validation split) is merged key by key, not replaced.
+    dataset_name: NemoGymDataset
+    data_path: null               # set by stages/train.py
+    split_validation_size: 0
+  validation: null
+  default:
+    dataset_name: NemoGymDataset
+    env_name: nemo_gym
+    prompt_file: null
+    system_prompt_file: null
+    processor: nemo_gym_data_processor
+
+env:
+  should_use_nemo_gym: true
+  should_log_nemo_gym_responses: true
+  nemo_gym:
+    port_range_low: 15001
+    port_range_high: 20000
+    is_trajectory_collection: false
+    config_paths:
+      - responses_api_models/vllm_model/configs/vllm_model_for_training.yaml
+      - resources_servers/blender_scene/configs/blender_scene.yaml
+    policy_model:
+      responses_api_models:
+        vllm_model:
+          uses_reasoning_parser: false
+          extra_body:
+            chat_template_kwargs:
+              enable_thinking: false
+
+logger:
+  log_dir: null                   # set by stages/train.py
+  num_val_samples_to_print: 0
+  wandb_enabled: false
+  tensorboard_enabled: true
+  mlflow_enabled: false
+  swanlab_enabled: false
+  monitor_gpus: true
+
+cluster:
+  gpus_per_node: 1
+  num_nodes: 1

@@ -1,0 +1,168 @@
+{
+ "row": {
+  "responses_create_params": {
+   "input": [
+    {
+     "role": "system",
+     "content": "You write Python scripts for Blender 5.2 (the bpy API). The script runs in background mode on a scene that starts with no objects. Units are metres and Z is up; the ground plane is z = 0. Build exactly what the task asks, with the exact object names given. Reply with one ```python code block and nothing else."
+    },
+    {
+     "role": "user",
+     "content": "Create a cube named \"Marble\" with edge length 1.26 m, resting on the ground and centred at x = -2.09, y = 1.31. Then stack a cube named \"Ball\" with edge length 0.69 m directly on top of \"Marble\", centred on it."
+    }
+   ]
+  },
+  "verifier_metadata": {
+   "task": {
+    "id": "eval_id-stack-0",
+    "template": "stack",
+    "params": {
+     "names": [
+      "Marble",
+      "Ball"
+     ],
+     "sizes": [
+      1.26,
+      0.69
+     ],
+     "x": -2.09,
+     "y": 1.31
+    },
+    "prompt": "Create a cube named \"Marble\" with edge length 1.26 m, resting on the ground and centred at x = -2.09, y = 1.31. Then stack a cube named \"Ball\" with edge length 0.69 m directly on top of \"Marble\", centred on it."
+   }
+  },
+  "agent_ref": {
+   "type": "responses_api_agents",
+   "name": "blender_scene_simple_agent"
+  }
+ },
+ "oracle_code": "import bpy\nbpy.ops.mesh.primitive_cube_add(size=1.26, location=(-2.09, 1.31, 0.63))\nbpy.context.active_object.name = \"Marble\"\nbpy.ops.mesh.primitive_cube_add(size=0.69, location=(-2.09, 1.31, 1.605))\nbpy.context.active_object.name = \"Ball\"\n",
+ "good_state": {
+  "objects": {
+   "Marble": {
+    "location": [
+     -2.0899999141693115,
+     1.309999942779541,
+     0.6299999952316284
+    ],
+    "bbox_min": [
+     -2.7199997901916504,
+     0.6799999475479126,
+     0.0
+    ],
+    "bbox_max": [
+     -1.459999918937683,
+     1.9399999380111694,
+     1.2599999904632568
+    ],
+    "dims": [
+     1.2599998712539673,
+     1.2599999904632568,
+     1.2599999904632568
+    ],
+    "center": [
+     -2.0899998545646667,
+     1.309999942779541,
+     0.6299999952316284
+    ],
+    "n_verts": 8,
+    "n_faces": 6,
+    "visible": true
+   },
+   "Ball": {
+    "location": [
+     -2.0899999141693115,
+     1.309999942779541,
+     1.6050000190734863
+    ],
+    "bbox_min": [
+     -2.434999942779541,
+     0.9649999141693115,
+     1.2599999904632568
+    ],
+    "bbox_max": [
+     -1.744999885559082,
+     1.6549999713897705,
+     1.9500000476837158
+    ],
+    "dims": [
+     0.690000057220459,
+     0.690000057220459,
+     0.690000057220459
+    ],
+    "center": [
+     -2.0899999141693115,
+     1.309999942779541,
+     1.6050000190734863
+    ],
+    "n_verts": 8,
+    "n_faces": 6,
+    "visible": true
+   }
+  }
+ },
+ "floating_state": {
+  "objects": {
+   "Marble": {
+    "location": [
+     -2.0899999141693115,
+     1.309999942779541,
+     0.6299999952316284
+    ],
+    "bbox_min": [
+     -2.7199997901916504,
+     0.6799999475479126,
+     0.0
+    ],
+    "bbox_max": [
+     -1.459999918937683,
+     1.9399999380111694,
+     1.2599999904632568
+    ],
+    "dims": [
+     1.2599998712539673,
+     1.2599999904632568,
+     1.2599999904632568
+    ],
+    "center": [
+     -2.0899998545646667,
+     1.309999942779541,
+     0.6299999952316284
+    ],
+    "n_verts": 8,
+    "n_faces": 6,
+    "visible": true
+   },
+   "Ball": {
+    "location": [
+     -2.0899999141693115,
+     1.309999942779541,
+     2.1050000190734863
+    ],
+    "bbox_min": [
+     -2.434999942779541,
+     0.9649999141693115,
+     1.7599999904632568
+    ],
+    "bbox_max": [
+     -1.744999885559082,
+     1.6549999713897705,
+     2.450000047683716
+    ],
+    "dims": [
+     0.690000057220459,
+     0.690000057220459,
+     0.690000057220459
+    ],
+    "center": [
+     -2.0899999141693115,
+     1.309999942779541,
+     2.1050000190734863
+    ],
+    "n_verts": 8,
+    "n_faces": 6,
+    "visible": true
+   }
+  }
+ }
+}

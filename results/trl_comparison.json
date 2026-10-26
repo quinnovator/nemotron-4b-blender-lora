@@ -1,0 +1,45 @@
+{
+ "note": "The same experiment (tasks, seed 7, eval harness, LoRA r32/a64, lr 1e-5, 4x8 rollouts, 600 steps) trained with TRL 1.16 + PEFT instead of NeMo RL. Run C is TRL with Megatron-Bridge's LoRA A init (Xavier-uniform) and vLLM importance-sampling correction off. pass@1 over 200 tasks x 8 samples.",
+ "runs": {
+  "trl": {
+   "eval_id": {
+    "0": 0.0175,
+    "100": 0.4131,
+    "200": 0.885,
+    "300": 0.9912,
+    "400": 0.9962,
+    "500": 0.9988,
+    "600": 0.9981
+   },
+   "eval_transfer": {
+    "0": 0.108125,
+    "100": 0.3137,
+    "200": 0.3406,
+    "300": 0.48,
+    "400": 0.5125,
+    "500": 0.6088,
+    "600": 0.6325
+   }
+  },
+  "trl_run_c": {
+   "eval_id": {
+    "0": 0.0175,
+    "100": 0.79,
+    "200": 0.9875,
+    "300": 0.9888,
+    "400": 0.9925,
+    "500": 0.9931,
+    "600": 0.9881
+   },
+   "eval_transfer": {
+    "0": 0.108125,
+    "100": 0.2988,
+    "200": 0.3406,
+    "300": 0.3912,
+    "400": 0.4569,
+    "500": 0.3912,
+    "600": 0.5081
+   }
+  }
+ }
+}

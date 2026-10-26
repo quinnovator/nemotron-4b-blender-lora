@@ -1,0 +1,19 @@
+# A second training seed of configs/nemotron4b.yaml: the same tasks (seed 7), a different
+# GRPO seed (data order, sampling). Measures how much of a result is run-to-run noise.
+run_name: nemotron4b-seed8
+nemo_config: configs/nemo/grpo_nemotron4b.yaml
+model: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16
+chat_kwargs: {enable_thinking: false}
+vllm_extra: {mamba_ssm_cache_dtype: float32}
+train_templates: [stack, next_to]       # trained relations
+transfer_templates: [between]           # held out: never seen in training
+seed: 7                                 # task sampling: identical splits to the main run
+train_seed: 8                           # GRPO seed
+split_sizes: {train: 2000, eval_id: 200, eval_transfer: 200}
+max_completion_length: 768
+reward_weights: {ran: 0.1, checks: 0.5, full: 0.4}
+sandbox_backend: docker
+sandbox_workers: 16
+gate: {min_reward: 0.15, max_reward: 0.85, min_signal: 0.4}
+train: {max_steps: 600, save_every: 50}
+eval: {n: 8, every: 100, vllm_mem: 0.75, temperature: 0.7}

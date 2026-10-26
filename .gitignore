@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+runs/
+logs/
+.jobs/
+.cache/
+# Generated from a run's task splits by gym_env/build_data.py; only example.jsonl is kept.
+gym_env/blender_scene/data/*.jsonl
+!gym_env/blender_scene/data/example.jsonl

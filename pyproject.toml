@@ -1,0 +1,24 @@
+[project]
+name = "nemotron-4b-blender-lora"
+version = "0.1.0"
+description = "GRPO + LoRA on Nemotron 3 Nano 4B with NeMo RL and NeMo Gym: Blender scenes from plain English, scored by a sandboxed Blender, on one RTX 4090."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.12,<3.13"
+# Host side only: task building, the sandbox broker, vLLM evaluation and the report.
+# Training runs in the NeMo RL container (nemo/docker_run.sh), which brings its own stack.
+dependencies = [
+    "vllm==0.31.0",
+    "transformers==5.17.0",
+    "safetensors>=0.8",
+    "tensorboard>=2.21",
+    "matplotlib>=3.11",
+    "numpy>=2.3",
+    "pyyaml>=6.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 120

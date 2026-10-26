@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 400" width="760" height="400" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif">
+<text x="64" y="26" font-size="17" font-weight="600" fill="#1f2328">Held-out scenes solved on the first try</text>
+<text x="64" y="47" font-size="13" fill="#59636e">pass@1 on 200 "between" tasks, a relation never seen in training (8 samples each)</text>
+<line x1="64" x2="610" y1="348" y2="348" stroke="#d1d9e0" stroke-width="1"/>
+<text x="54" y="352" font-size="12" fill="#59636e" text-anchor="end">0%</text>
+<line x1="64" x2="610" y1="285.0" y2="285.0" stroke="#d1d9e0" stroke-width="1"/>
+<text x="54" y="289.0" font-size="12" fill="#59636e" text-anchor="end">25%</text>
+<line x1="64" x2="610" y1="222.0" y2="222.0" stroke="#d1d9e0" stroke-width="1"/>
+<text x="54" y="226.0" font-size="12" fill="#59636e" text-anchor="end">50%</text>
+<line x1="64" x2="610" y1="159.0" y2="159.0" stroke="#d1d9e0" stroke-width="1"/>
+<text x="54" y="163.0" font-size="12" fill="#59636e" text-anchor="end">75%</text>
+<line x1="64" x2="610" y1="96.0" y2="96.0" stroke="#d1d9e0" stroke-width="1"/>
+<text x="54" y="100.0" font-size="12" fill="#59636e" text-anchor="end">100%</text>
+<text x="64.0" y="368" font-size="12" fill="#59636e" text-anchor="middle">0</text>
+<text x="155.0" y="368" font-size="12" fill="#59636e" text-anchor="middle">100</text>
+<text x="246.0" y="368" font-size="12" fill="#59636e" text-anchor="middle">200</text>
+<text x="337.0" y="368" font-size="12" fill="#59636e" text-anchor="middle">300</text>
+<text x="428.0" y="368" font-size="12" fill="#59636e" text-anchor="middle">400</text>
+<text x="519.0" y="368" font-size="12" fill="#59636e" text-anchor="middle">500</text>
+<text x="610.0" y="368" font-size="12" fill="#59636e" text-anchor="middle">600</text>
+<text x="337.0" y="390" font-size="12" fill="#59636e" text-anchor="middle">training step (0 = base model)</text>
+<polyline points="64.0,320.8 155.0,268.9 246.0,262.2 337.0,227.0 428.0,218.9 519.0,194.6 610.0,188.6" fill="none" stroke="#6250d6" stroke-width="2.5" stroke-dasharray="6 4" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="64.0" cy="320.8" r="4.5" fill="#6250d6" stroke="#ffffff" stroke-width="2"><title>TRL, step 0: 10.8%</title></circle>
+<circle cx="155.0" cy="268.9" r="4.5" fill="#6250d6" stroke="#ffffff" stroke-width="2"><title>TRL, step 100: 31.4%</title></circle>
+<circle cx="246.0" cy="262.2" r="4.5" fill="#6250d6" stroke="#ffffff" stroke-width="2"><title>TRL, step 200: 34.1%</title></circle>
+<circle cx="337.0" cy="227.0" r="4.5" fill="#6250d6" stroke="#ffffff" stroke-width="2"><title>TRL, step 300: 48.0%</title></circle>
+<circle cx="428.0" cy="218.9" r="4.5" fill="#6250d6" stroke="#ffffff" stroke-width="2"><title>TRL, step 400: 51.2%</title></circle>
+<circle cx="519.0" cy="194.6" r="4.5" fill="#6250d6" stroke="#ffffff" stroke-width="2"><title>TRL, step 500: 60.9%</title></circle>
+<circle cx="610.0" cy="188.6" r="4.5" fill="#6250d6" stroke="#ffffff" stroke-width="2"><title>TRL, step 600: 63.2%</title></circle>
+<text x="622.0" y="193.6" font-size="14" font-weight="600" fill="#1f2328">TRL 63%</text>
+<polyline points="64.0,320.8 155.0,249.6 246.0,191.3 337.0,163.9 428.0,150.0 519.0,159.5 610.0,155.5" fill="none" stroke="#12936a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="64.0" cy="320.8" r="4.5" fill="#12936a" stroke="#ffffff" stroke-width="2"><title>NeMo RL, step 0: 10.8%</title></circle>
+<circle cx="155.0" cy="249.6" r="4.5" fill="#12936a" stroke="#ffffff" stroke-width="2"><title>NeMo RL, step 100: 39.1%</title></circle>
+<circle cx="246.0" cy="191.3" r="4.5" fill="#12936a" stroke="#ffffff" stroke-width="2"><title>NeMo RL, step 200: 62.2%</title></circle>
+<circle cx="337.0" cy="163.9" r="4.5" fill="#12936a" stroke="#ffffff" stroke-width="2"><title>NeMo RL, step 300: 73.1%</title></circle>
+<circle cx="428.0" cy="150.0" r="4.5" fill="#12936a" stroke="#ffffff" stroke-width="2"><title>NeMo RL, step 400: 78.6%</title></circle>
+<circle cx="519.0" cy="159.5" r="4.5" fill="#12936a" stroke="#ffffff" stroke-width="2"><title>NeMo RL, step 500: 74.8%</title></circle>
+<circle cx="610.0" cy="155.5" r="4.5" fill="#12936a" stroke="#ffffff" stroke-width="2"><title>NeMo RL, step 600: 76.4%</title></circle>
+<text x="622.0" y="160.5" font-size="14" font-weight="600" fill="#1f2328">NeMo RL 76%</text>
+<text x="74.0" y="340.8" font-size="12" fill="#59636e">base 11%</text>
+<line x1="64" x2="88" y1="70" y2="70" stroke="#12936a" stroke-width="2.5"/>
+<text x="96" y="74" font-size="12" fill="#1f2328">NeMo RL + NeMo Gym</text>
+<line x1="244" x2="268" y1="70" y2="70" stroke="#6250d6" stroke-width="2.5" stroke-dasharray="6 4"/>
+<text x="276" y="74" font-size="12" fill="#1f2328">TRL, same setup</text>
+</svg>

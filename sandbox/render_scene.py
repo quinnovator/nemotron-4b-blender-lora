@@ -58,7 +58,7 @@ lo, hi = Vector(cfg["bounds"][0]), Vector(cfg["bounds"][1])
 center = (lo + hi) / 2
 cam_d = bpy.data.cameras.new("cam")
 cam_d.type = "ORTHO"
-cam_d.ortho_scale = max(hi.x - lo.x, hi.y - lo.y, 2.5) * 1.55
+cam_d.ortho_scale = max(hi.x - lo.x, hi.y - lo.y, (hi.z - lo.z) * 1.5, 2.5) * 1.55
 cam = bpy.data.objects.new("cam", cam_d)
 scene.collection.objects.link(cam)
 cam.location = center + Vector((1.0, -1.25, 1.05)).normalized() * 30
@@ -80,7 +80,7 @@ scene.render.engine = "CYCLES"
 scene.cycles.device = "CPU"
 scene.cycles.samples = 64
 scene.cycles.use_denoising = True
-scene.render.resolution_x, scene.render.resolution_y = 960, 600
+scene.render.resolution_x, scene.render.resolution_y = cfg.get("resolution", [960, 600])
 scene.render.film_transparent = False
 scene.view_settings.view_transform = "Standard"
 scene.render.image_settings.file_format = "PNG"

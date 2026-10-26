@@ -1,6 +1,9 @@
 """Render before/after scenes for the write-up. Model code only ever runs in the sandbox.
 
 Usage: python tools/render_examples.py runs/<run> <out_dir>
+
+<out_dir>/picks.json lists what to render: [{"key", "task_id", "labels", "texts",
+"resolution"?: [w, h]}], one image per text. Writes <key>_<i>.png and meta.json.
 """
 import collections
 import json
@@ -39,12 +42,13 @@ def task_objects(task):
     return [(n, "cube") for n in p["names"]]
 
 
-def render(task, code, target, bounds, out_png):
+def render(task, code, target, bounds, out_png, resolution=(960, 600)):
     """Run untrusted code in the sandbox, then render its scene in a second container."""
     names = task_objects(task)
     cfg = {"colors": {n: PALETTE[i % 3] for i, (n, _) in enumerate(names)},
            "ghosts": [{"name": n, "shape": s, **target["objects"][n]} for n, s in names],
-           "bounds": bounds, "ghost_rgb": GHOST, "ground_rgb": GROUND, "sky_rgb": SKY}
+           "bounds": bounds, "ghost_rgb": GHOST, "ground_rgb": GROUND, "sky_rgb": SKY,
+           "resolution": list(resolution)}
     JOBS_DIR.mkdir(exist_ok=True)
     with tempfile.TemporaryDirectory(dir=JOBS_DIR) as d:
         Path(d, "agent.py").write_text(code)
@@ -90,7 +94,7 @@ def main(run, out):
         b = bounds_of([target] + states, names)
         for i, (label, code) in enumerate(zip(pk["labels"], codes)):
             png = out / f"{pk['key']}_{i}.png"
-            render(task, code, target, b, png)
+            render(task, code, target, b, png, pk.get("resolution", (960, 600)))
             print("rendered", png, flush=True)
         meta.append({**pk, "prompt": task["prompt"], "codes": codes, "states": states,
                      "target": target})

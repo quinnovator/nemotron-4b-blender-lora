@@ -1,8 +1,9 @@
 # nemotron-4b-blender-lora
 
 <p align="center">
-  <img src="docs/images/hero.png" alt="Two renders of the same held-out task. Left, the base model: two cubes in place but the sphere sunk halfway into the ground, below its pink target wireframe. Right, after 600 GRPO steps: the sphere sits on the ground exactly inside its target, midway between the cubes." width="100%">
+  <img src="docs/images/progress-between.png" alt="Three renders of the same held-out task, a sphere halfway between two cubes. Before training, the model's script creates three objects with no geometry, so only the pink target wireframes show: 0 of 9 checks. At step 100, the cubes are right and the sphere is midway but 10 cm into the floor: 8 of 9. At step 600, the sphere sits on the ground exactly midway: 9 of 9." width="100%">
 </p>
+<p align="center"><sub>Pink wireframes: where the checker wants each object. Solid: what the model's script built. The task, a sphere exactly halfway between two cubes, never appears in training.</sub></p>
 
 Teaching a 4B model to build 3D scenes in Blender, using reinforcement learning on a single RTX 4090. NVIDIA's Nemotron 3 Nano 4B reads a scene described in plain English and writes a Blender Python (`bpy`) script to build it. The script runs in a locked-down Blender, and the reward comes from measuring the scene it actually built, not from another model's opinion. Training is GRPO with a LoRA adapter, on NVIDIA's own RL stack: [NeMo RL](https://github.com/NVIDIA-NeMo/RL) for the trainer and [NeMo Gym](https://github.com/NVIDIA-NeMo/Gym) for the environment.
 
@@ -22,6 +23,11 @@ Teaching a 4B model to build 3D scenes in Blender, using reinforcement learning 
 | Held-out: scripts that crash | 36% | **0.5%** |
 
 Each number is 200 tasks with 8 samples per task. On the held-out relation, the trained model's single try (76.4%) beats the base model's best of eight (54.5%).
+
+<p align="center">
+  <img src="docs/images/progress-stack.png" alt="Three renders of a trained task, three cubes stacked into a tower. Before training, every cube is half its size and floating inside its target wireframe: 3 of 9 checks. At step 100, sizes are right but the upper cubes sit 15 cm too low, sunk into the cubes below: 7 of 9. At step 600, every size and contact is right: 9 of 9." width="75%">
+</p>
+<p align="center"><sub>A trained relation: stack three cubes, each centred on the one below.</sub></p>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/heldout-dark.svg">
@@ -123,7 +129,7 @@ Peak whole-card memory during training was 22.4 GiB (desktop included), and a me
 | [nemo/docker_run.sh](nemo/docker_run.sh) | Runs a command in the NeMo RL container with the right mounts and NCCL settings |
 | [stages/](stages) | The seven pipeline stages |
 | [results/](results) | The main run's evals, training log and report; TRL comparison numbers |
-| [tools/](tools) | Scene renders for write-ups ([render_examples.py](tools/render_examples.py)) and the README figures ([figures.py](tools/figures.py)) |
+| [tools/](tools) | Scene renders for write-ups ([render_examples.py](tools/render_examples.py), laid out as captioned strips by [strip.py](tools/strip.py)) and the README charts ([figures.py](tools/figures.py)) |
 | [tests/](tests) | Oracle solutions pass every check, broken ones don't (`.venv/bin/python tests/test_env.py docker`) |
 
 ## Security
